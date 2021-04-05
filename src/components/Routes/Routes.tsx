@@ -1,15 +1,16 @@
-import React, { ReactNode } from 'react';
+import React, { ReactElement } from 'react';
+
+// Components
+import Home from '../Home';
 
 // React Router Dom
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 
-function Routes(): ReactNode {
+function Routes(): ReactElement {
   return (
     <Router>
       <Switch>
-        <Route path="/">
-          <h1>Hello World</h1>
-        </Route>
+        <Route component={Home} path="/" />
       </Switch>
     </Router>
   );

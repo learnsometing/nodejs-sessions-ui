@@ -1,5 +1,8 @@
 import React, { ReactElement } from 'react';
 
+// Api
+import login from '../../api/auth/login';
+
 // Components
 import TextInput from '../TextInput';
 
@@ -45,9 +48,16 @@ function LoginForm(): ReactElement {
           email: '',
           password: '',
         }}
-        onSubmit={(values, { setSubmitting }) => {
-          console.log(values);
-          setSubmitting(false);
+        onSubmit={async (values, { setSubmitting }) => {
+          const { email, password } = values;
+          try {
+            const user = await login({ email, password });
+            return user;
+          } catch (error) {
+            console.error(error);
+          } finally {
+            setSubmitting(false);
+          }
         }}
         validationSchema={validationSchema}
       >

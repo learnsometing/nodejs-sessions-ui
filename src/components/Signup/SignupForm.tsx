@@ -1,5 +1,9 @@
 import React, { ReactElement } from 'react';
 
+// Api
+import login from '../../api/auth/login';
+import signup from '../../api/auth/signup';
+
 // Components
 import TextInput from '../TextInput';
 
@@ -48,10 +52,17 @@ function SignupForm(): ReactElement {
           lastName: '',
           password: '',
         }}
-        onSubmit={(values, { setSubmitting }) => {
-          const { confirmPassword, ...formValues } = values;
-          console.log(formValues);
-          setSubmitting(false);
+        onSubmit={async (values, { setSubmitting }) => {
+          const { email, firstName, lastName, password } = values;
+          try {
+            const user = await signup({ email, firstName, lastName, password });
+            await login({ email, password });
+            return user; // TODO: Store user in some stateful store
+          } catch (error) {
+            console.error(error);
+          } finally {
+            setSubmitting(false);
+          }
         }}
         validationSchema={validationSchema}
       >

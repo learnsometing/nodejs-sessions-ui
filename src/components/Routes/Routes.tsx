@@ -2,17 +2,19 @@ import React, { ReactElement } from 'react';
 
 // Components
 import Home from '../Home';
+import Login from '../Login';
+import Signup from '../Signup';
 
 // React Router Dom
-import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 function Routes(): ReactElement {
   return (
-    <Router>
-      <Switch>
-        <Route component={Home} path="/" />
-      </Switch>
-    </Router>
+    <Switch>
+      <Route component={Home} exact path="/" />
+      <Route component={Login} path="/login" />
+      <Route component={Signup} path="/signup" />
+    </Switch>
   );
 }
 

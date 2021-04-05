@@ -4,6 +4,9 @@ import React, { ReactElement } from 'react';
 import { IconButton, Menu, MenuItem } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
+// React Router Dom
+import { Link } from 'react-router-dom';
+
 function AccountMenu(): ReactElement {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -27,8 +30,12 @@ function AccountMenu(): ReactElement {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem>Login</MenuItem>
-        <MenuItem>Sign Up</MenuItem>
+        <MenuItem>
+          <Link to="/login">Log In</Link>
+        </MenuItem>
+        <MenuItem>
+          <Link to="/signup">Sign Up</Link>
+        </MenuItem>
       </Menu>
     </>
   );

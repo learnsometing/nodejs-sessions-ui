@@ -7,10 +7,15 @@ import DefaultLayout from './templates/layouts/Default';
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from './styles/mui-theme';
 
+// React Router DOM
+import { BrowserRouter as Router } from 'react-router-dom';
+
 function App(): ReactElement {
   return (
     <ThemeProvider theme={theme}>
-      <DefaultLayout />
+      <Router>
+        <DefaultLayout />
+      </Router>
     </ThemeProvider>
   );
 }

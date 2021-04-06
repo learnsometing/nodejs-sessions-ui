@@ -10,6 +10,9 @@ import { CustomMUITheme } from '../../styles/mui-theme';
 import { Box, Container, Typography } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
 
+// React Router
+import { Link } from 'react-router-dom';
+
 function Header(): ReactElement {
   const theme: CustomMUITheme = useTheme();
 
@@ -18,7 +21,9 @@ function Header(): ReactElement {
       <Container maxWidth="lg">
         <Box alignItems="center" display="flex" justifyContent="space-between">
           <div style={{ color: theme.palette.green.main }}>
-            <Typography variant="h1">nodejs-sessions</Typography>
+            <Link to="/">
+              <Typography variant="h1">nodejs-sessions</Typography>
+            </Link>
           </div>
           <AccountMenu />
         </Box>

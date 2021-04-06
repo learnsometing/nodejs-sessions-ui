@@ -1,11 +1,7 @@
-import React, { ReactElement } from 'react';
-
-// Api
-import login from '../../api/auth/login';
-import signup from '../../api/auth/signup';
+import React, { ReactElement, useEffect } from 'react';
 
 // Components
-import TextInput from '../TextInput';
+import TextInput from '../../../components/TextInput';
 
 // Formik
 import { Formik, Form } from 'formik';
@@ -13,6 +9,13 @@ import { Formik, Form } from 'formik';
 // Material UI
 import { Button, Card, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+
+// React Router
+import { useHistory } from 'react-router-dom';
+
+// Redux
+import { useDispatch, useSelector } from 'react-redux';
+import { selectAccount, selectStatus, login } from '../accountSlice';
 
 // Validation
 import validationSchema from './validation-schema';
@@ -35,51 +38,38 @@ const useStyles = makeStyles({
   },
 });
 
-function SignupForm(): ReactElement {
+function LoginForm(): ReactElement {
+  const account = useSelector(selectAccount);
+  const accountStatus = useSelector(selectStatus);
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  useEffect(() => {
+    if (account.email.length && accountStatus === 'SUCCEEDED') {
+      history.push('/');
+    }
+  }, [account.email.length, accountStatus, dispatch, history]);
 
   return (
     <Card className={classes.root} elevation={3}>
       <Typography gutterBottom variant="h2">
-        Sign up
+        Log in
       </Typography>
       <Formik
         enableReinitialize
         initialValues={{
-          confirmPassword: '',
           email: '',
-          firstName: '',
-          lastName: '',
           password: '',
         }}
         onSubmit={async (values, { setSubmitting }) => {
-          const { email, firstName, lastName, password } = values;
-          try {
-            const user = await signup({ email, firstName, lastName, password });
-            await login({ email, password });
-            return user; // TODO: Store user in some stateful store
-          } catch (error) {
-            console.error(error);
-          } finally {
-            setSubmitting(false);
-          }
+          dispatch(login(values));
+          setSubmitting(false);
         }}
         validationSchema={validationSchema}
       >
         {({ isSubmitting }) => (
           <Form>
-            <TextInput
-              disabled={isSubmitting}
-              label="First Name"
-              name="firstName"
-              placeholder="Foo"
-            />
-            <TextInput
-              disabled={isSubmitting}
-              label="Last Name"
-              name="lastName"
-              placeholder="Bar"
-            />
             <TextInput
               disabled={isSubmitting}
               label="Email Address"
@@ -91,13 +81,8 @@ function SignupForm(): ReactElement {
               label="Password"
               name="password"
             />
-            <TextInput
-              disabled={isSubmitting}
-              label="Confirm Password"
-              name="confirmPassword"
-            />
             <Button color="primary" type="submit" variant="contained">
-              Submit
+              Log In
             </Button>
           </Form>
         )}
@@ -106,4 +91,4 @@ function SignupForm(): ReactElement {
   );
 }
 
-export default SignupForm;
+export default LoginForm;

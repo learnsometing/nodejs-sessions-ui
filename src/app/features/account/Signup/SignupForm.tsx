@@ -1,10 +1,7 @@
-import React, { ReactElement } from 'react';
-
-// Api
-import login from '../../api/auth/login';
+import React, { ReactElement, useEffect } from 'react';
 
 // Components
-import TextInput from '../TextInput';
+import TextInput from '../../../components/TextInput';
 
 // Formik
 import { Formik, Form } from 'formik';
@@ -12,6 +9,13 @@ import { Formik, Form } from 'formik';
 // Material UI
 import { Button, Card, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+
+// React Router
+import { useHistory } from 'react-router-dom';
+
+// Redux
+import { useDispatch, useSelector } from 'react-redux';
+import { selectAccount, selectStatus, signup } from '../accountSlice';
 
 // Validation
 import validationSchema from './validation-schema';
@@ -34,35 +38,53 @@ const useStyles = makeStyles({
   },
 });
 
-function LoginForm(): ReactElement {
+function SignupForm(): ReactElement {
+  const account = useSelector(selectAccount);
+  const accountStatus = useSelector(selectStatus);
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  useEffect(() => {
+    if (account.email.length && accountStatus === 'SUCCEEDED') {
+      history.push('/');
+    }
+  }, [account.email.length, accountStatus, dispatch, history]);
 
   return (
     <Card className={classes.root} elevation={3}>
       <Typography gutterBottom variant="h2">
-        Log in
+        Sign up
       </Typography>
       <Formik
         enableReinitialize
         initialValues={{
+          confirmPassword: '',
           email: '',
+          firstName: '',
+          lastName: '',
           password: '',
         }}
         onSubmit={async (values, { setSubmitting }) => {
-          const { email, password } = values;
-          try {
-            const user = await login({ email, password });
-            return user;
-          } catch (error) {
-            console.error(error);
-          } finally {
-            setSubmitting(false);
-          }
+          dispatch(signup(values));
+          setSubmitting(false);
         }}
         validationSchema={validationSchema}
       >
         {({ isSubmitting }) => (
           <Form>
+            <TextInput
+              disabled={isSubmitting}
+              label="First Name"
+              name="firstName"
+              placeholder="Foo"
+            />
+            <TextInput
+              disabled={isSubmitting}
+              label="Last Name"
+              name="lastName"
+              placeholder="Bar"
+            />
             <TextInput
               disabled={isSubmitting}
               label="Email Address"
@@ -74,8 +96,13 @@ function LoginForm(): ReactElement {
               label="Password"
               name="password"
             />
+            <TextInput
+              disabled={isSubmitting}
+              label="Confirm Password"
+              name="confirmPassword"
+            />
             <Button color="primary" type="submit" variant="contained">
-              Log In
+              Submit
             </Button>
           </Form>
         )}
@@ -84,4 +111,4 @@ function LoginForm(): ReactElement {
   );
 }
 
-export default LoginForm;
+export default SignupForm;
